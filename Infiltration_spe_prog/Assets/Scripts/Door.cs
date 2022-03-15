@@ -4,7 +4,13 @@ using UnityEngine;
 public class Door : MonoBehaviour, I_Door
 {
     [SerializeField, Tooltip("Type de clé")] Keytype m_neededKey;
-    [SerializeField, Tooltip("La porte elle même")] Rigidbody m_door;
+
+    [SerializeField, Tooltip("Animator de la porte")] 
+    Animator m_animatorDoor;
+    [SerializeField, Tooltip("")]
+    string m_openTriggerName = "Open";
+
+    int m_openHash;
     public void OpenDoor(List<Keytype> p_playerKeys)
     {
         if (m_neededKey)
@@ -18,9 +24,24 @@ public class Door : MonoBehaviour, I_Door
             // si il ne la on return
         }
         Debug.Log(message:"Ouverture");
-        m_door.MovePosition(new Vector3(m_door.position.x, -2, m_door.position.z));
+        m_animatorDoor?.SetTrigger(m_openHash);
         
 
         // On ouvre
+    }
+
+    private void Awake()
+    {
+
+        if (m_animatorDoor == null)
+        {
+            m_animatorDoor = GetComponent<Animator>();
+            if (m_animatorDoor == null)
+            {
+                Debug.Log("Tardos l'animator MERCI");
+                throw new System.ArgumentNullException();
+            }
+        }
+        m_openHash = Animator.StringToHash(m_openTriggerName);
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//using random = UnityEngine.Random;
+
 public class Player : MonoBehaviour
 {
     [SerializeField, Tooltip("Characontroller")]
@@ -18,6 +20,9 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Layer des box")]
     LayerMask m_boxLayer;
 
+    [SerializeField, Tooltip("Rotation degré par seconde")]
+    private float m_rotateSpeed = 90;
+
     private void Update()
     {
         m_dirX = Input.GetAxis("Horizontal");
@@ -25,7 +30,13 @@ public class Player : MonoBehaviour
 
         float deltaSpeed = m_speed * Time.deltaTime;
 
-        m_characterController.Move(new Vector3(m_dirX * deltaSpeed, 0, m_dirY * deltaSpeed));
+        m_characterController.transform.Rotate(0, m_dirX * m_rotateSpeed * Time.deltaTime, 0);
+
+        Vector3 movement = transform.forward * Input.GetAxis("Vertical") * m_speed;
+
+        m_characterController.Move(movement * Time.deltaTime);
+
+        //m_characterController.Move(new Vector3(m_dirX * deltaSpeed, 0, m_dirY * deltaSpeed));
     }
 
     private void OnTriggerEnter(Collider other)
